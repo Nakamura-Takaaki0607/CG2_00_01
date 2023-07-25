@@ -648,6 +648,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	scissorRect.top = 0;
 	scissorRect.bottom = kClientHeight;
 
+	// color変数
+	Vector4 color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+
 	// マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
 	ID3D12Resource* materialResource = CreateBufferResource(device, sizeof(Vector4));
 	// マテリアルにデータを書き込む
@@ -655,7 +658,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 書き込むためのアドレスを取得
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	// 今回は赤を書き込んでみる
-	*materialData = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	//*materialData = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	*materialData = color;
 
 	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
 	//ID3D12Resource* wvpResource = CreateBufferResource(device, sizeof(Matrix4x4));
@@ -747,6 +751,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 描画！（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
 			commandList->DrawInstanced(3, 1, 0, 0);
 
+			ImGui::Begin("window");
+			ImGui::ColorEdit3("color", &color.x);
+			ImGui::End();
+
 			/*transform.rotate.y += 0.03f;
 			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 			*wvpData = worldMatrix;*/
@@ -765,7 +773,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 			// TransitionBarrierを張る
-			//commandList->ResourceBarrier(1, &barrier);
+			commandList->ResourceBarrier(1, &barrier);
 			// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
 			hr = commandList->Close();
 			assert(SUCCEEDED(hr));
