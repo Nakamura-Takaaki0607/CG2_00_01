@@ -9981,9 +9981,9 @@ void ImGui::SetTooltip(const char* fmt, ...)
     va_end(args);
 }
 
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // [SECTION] POPUPS
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 // Supported flags: ImGuiPopupFlags_AnyPopupId, ImGuiPopupFlags_AnyPopupLevel
 bool ImGui::IsPopupOpen(ImGuiID id, ImGuiPopupFlags popup_flags)
